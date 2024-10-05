@@ -135,23 +135,6 @@ namespace WorldSim.ViewModels.Controls
                 // スキルが選択されていないときは0とする
                 list.Add(0);
             }
-            else if (Kind == SkillSelectorKind.Augmentation)
-            {
-                // スキルが存在して傀異錬成画面の場合は固定
-                list.Add(3);
-                list.Add(2);
-                list.Add(1);
-                list.Add(-1);
-                list.Add(-2);
-                list.Add(-3);
-            }
-            else if (Kind == SkillSelectorKind.IdealAugmentation)
-            {
-                // スキルが存在して理想錬成画面の場合は固定
-                list.Add(3);
-                list.Add(2);
-                list.Add(1);
-            }
             else
             {
                 // 通常の場合
@@ -162,15 +145,8 @@ namespace WorldSim.ViewModels.Controls
             }
             SkillLevels.Value = list;
 
-            // 初期値は通常は最大レベル、傀異錬成・理想錬成時は1とする
-            if (maxLevel != 0 && Kind != SkillSelectorKind.Normal && Kind != SkillSelectorKind.WithFixs)
-            {
-                SkillLevel.Value = 1;
-            }
-            else
-            {
-                SkillLevel.Value = maxLevel;
-            }
+            // 初期値は通常は最大レベル
+            SkillLevel.Value = maxLevel;
         }
 
         /// <summary>

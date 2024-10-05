@@ -65,21 +65,6 @@ namespace SimModel.Model
         public Sex Sex { get; set; }
 
         /// <summary>
-        /// 理想錬成を利用するか否か
-        /// </summary>
-        public bool IncludeIdealAugmentation { get; set; }
-
-        /// <summary>
-        /// 通常装備を優先するか否か
-        /// </summary>
-        public bool PrioritizeNoIdeal { get; set; }
-
-        /// <summary>
-        /// 既存装備で組める場合を除外するか否か
-        /// </summary>
-        public bool ExcludeAbstract { get; set; }
-
-        /// <summary>
         /// マイ検索条件保存用ID
         /// </summary>
         public string ID { get; set; }
@@ -88,11 +73,6 @@ namespace SimModel.Model
         /// マイ検索条件保存用名前
         /// </summary>
         public string DispName { get; set; }
-
-        /// <summary>
-        /// 錬成再計算用 部位固定情報
-        /// </summary>
-        public SortedDictionary<string, int>? AdditionalFixData { get; set; } = null;
 
         /// <summary>
         /// CSV用スキル形式
@@ -182,7 +162,7 @@ namespace SimModel.Model
             Skills = new List<Skill>();
             foreach (var skill in condition.Skills)
             {
-                Skill newSkill = new Skill(skill.Name, skill.Level, skill.IsAdditional, skill.IsFixed);
+                Skill newSkill = new Skill(skill.Name, skill.Level, skill.IsFixed);
                 Skills.Add(newSkill);
             }
             WeaponSlot1 = condition.WeaponSlot1;
@@ -195,9 +175,6 @@ namespace SimModel.Model
             Ice = condition.Ice;
             Dragon = condition.Dragon;
             Sex = condition.Sex;
-            IncludeIdealAugmentation = condition.IncludeIdealAugmentation;
-            PrioritizeNoIdeal = condition.PrioritizeNoIdeal;
-            ExcludeAbstract = condition.ExcludeAbstract;
         }
 
         /// <summary>

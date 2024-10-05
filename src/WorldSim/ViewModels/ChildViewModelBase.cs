@@ -34,21 +34,6 @@ namespace WorldSim.ViewModels
         protected CludeTabViewModel CludeTabVM { get => MainVM.CludeTabVM.Value; }
 
         /// <summary>
-        /// 護石画面のVM
-        /// </summary>
-        protected CharmTabViewModel CharmTabVM { get => MainVM.CharmTabVM.Value; }
-
-        /// <summary>
-        /// 傀異錬成画面のVM
-        /// </summary>
-        protected AugmentationTabViewModel AugmentationTabVM { get => MainVM.AugmentationTabVM.Value; }
-
-        /// <summary>
-        /// 理想錬成画面のVM
-        /// </summary>
-        protected IdealAugmentationTabViewModel IdealAugmentationTabVM { get => MainVM.IdealAugmentationTabVM.Value; }
-
-        /// <summary>
         /// マイセット画面のVM
         /// </summary>
         protected MySetTabViewModel MySetTabVM { get => MainVM.MySetTabVM.Value; }

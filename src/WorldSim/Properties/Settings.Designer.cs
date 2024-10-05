@@ -98,18 +98,6 @@ namespace WorldSim.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string AugmentationIndexes {
-            get {
-                return ((string)(this["AugmentationIndexes"]));
-            }
-            set {
-                this["AugmentationIndexes"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string MySetIndexes {
             get {
                 return ((string)(this["MySetIndexes"]));

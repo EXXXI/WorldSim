@@ -11,7 +11,7 @@ namespace WorldSim.ViewModels.BindableWrapper
     internal class BindableEquipment : ChildViewModelBase
     {
         /// <summary>
-        /// 表示用装備名(護石のみ特殊処理)
+        /// 表示用装備名
         /// </summary>
         public ReactiveProperty<string> DispName { get; } = new();
 

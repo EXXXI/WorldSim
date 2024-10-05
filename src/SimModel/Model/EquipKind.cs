@@ -12,7 +12,6 @@
         leg,
         deco,
         charm,
-        gskill,
         error
     }
 
@@ -44,8 +43,6 @@
                     return "装飾品";
                 case EquipKind.charm:
                     return "護石";
-                case EquipKind.gskill:
-                    return "錬成";
                 default:
                     return string.Empty;
             }

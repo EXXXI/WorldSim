@@ -120,7 +120,6 @@ namespace WorldSim.Views
 
 			// 各DataGridの情報を保存
 			settings.SimulatorIndexes = GetColumnIndexes(simulator.grid);
-			settings.AugmentationIndexes = GetColumnIndexes(augmentation.grid);
 			settings.MySetIndexes = GetColumnIndexes(myset.grid);
 
 			// 保存
@@ -160,7 +159,6 @@ namespace WorldSim.Views
 
 			// 各DataGridに列情報を復元
 			SetColumnIndexes(simulator.grid, settings.SimulatorIndexes);
-			SetColumnIndexes(augmentation.grid, settings.AugmentationIndexes);
 			SetColumnIndexes(myset.grid, settings.MySetIndexes);
 		}
 

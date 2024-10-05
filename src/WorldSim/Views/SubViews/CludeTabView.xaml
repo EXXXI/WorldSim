@@ -31,8 +31,6 @@
             <StackPanel  Margin="20,0,0,0">
                 <TextBlock>特殊操作(フィルタは解除されます)</TextBlock>
                 <Button Command="{Binding DeleteAllCludeCommand}" Margin="5,0,0,0">除外・固定を全て解除</Button>
-                <Button Command="{Binding ExcludeAllAugmentationCommand}" Margin="5,0,0,0">錬成防具を全て除外</Button>
-                <Button Command="{Binding ExcludeRare9Command}" Margin="5,0,0,0">レア9以下を全て除外</Button>
             </StackPanel>
         </StackPanel>
 
