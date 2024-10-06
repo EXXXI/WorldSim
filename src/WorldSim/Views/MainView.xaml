@@ -43,6 +43,13 @@
 
             <TabItem>
                 <TabItem.Header>
+                    <TextBlock Text="装飾品設定" Style="{StaticResource ResourceKey=tabHeader}" />
+                </TabItem.Header>
+                <subviews:DecoTabView DataContext="{Binding DecoTabVM.Value, Mode=OneWay}"/>
+            </TabItem>
+
+            <TabItem>
+                <TabItem.Header>
                     <TextBlock Text="マイセット" Style="{StaticResource ResourceKey=tabHeader}" />
                 </TabItem.Header>
                 <subviews:MySetTabView x:Name="myset" DataContext="{Binding MySetTabVM.Value, Mode=OneWay}"/>

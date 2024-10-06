@@ -75,6 +75,11 @@ namespace WorldSim.ViewModels
         public ReactivePropertySlim<CludeTabViewModel> CludeTabVM { get; } = new();
 
         /// <summary>
+        /// 装飾品設定画面のVM
+        /// </summary>
+        public ReactivePropertySlim<DecoTabViewModel> DecoTabVM { get; } = new();
+
+        /// <summary>
         /// マイセット画面のVM
         /// </summary>
         public ReactivePropertySlim<MySetTabViewModel> MySetTabVM { get; } = new();
@@ -114,6 +119,7 @@ namespace WorldSim.ViewModels
             SkillSelectTabVM.Value = new SkillSelectTabViewModel();
             SimulatorTabVM.Value = new SimulatorTabViewModel();
             CludeTabVM.Value = new CludeTabViewModel();
+            DecoTabVM.Value = new DecoTabViewModel();
             MySetTabVM.Value = new MySetTabViewModel();
             LicenseTabVM.Value = new LicenseTabViewModel();
 

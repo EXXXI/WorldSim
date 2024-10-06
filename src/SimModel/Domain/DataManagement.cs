@@ -122,7 +122,7 @@ namespace SimModel.Domain
             }
 
             // マスタへ反映
-            CsvOperation.SaveCludeCSV();
+            FileOperation.SaveCludeCSV();
 
             // 追加した設定
             return ret;
@@ -145,7 +145,7 @@ namespace SimModel.Domain
             }
 
             // マスタへ反映
-            CsvOperation.SaveCludeCSV();
+            FileOperation.SaveCludeCSV();
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace SimModel.Domain
             Masters.Cludes.Clear();
 
             // マスタへ反映
-            CsvOperation.SaveCludeCSV();
+            FileOperation.SaveCludeCSV();
         }
 
         /// <summary>
@@ -170,7 +170,7 @@ namespace SimModel.Domain
             Masters.MySets.Add(set);
 
             // マスタへ反映
-            CsvOperation.SaveMySetCSV();
+            FileOperation.SaveMySetCSV();
 
             return set;
         }
@@ -185,7 +185,7 @@ namespace SimModel.Domain
             Masters.MySets.Remove(set);
 
             // マスタへ反映
-            CsvOperation.SaveMySetCSV();
+            FileOperation.SaveMySetCSV();
         }
 
         /// <summary>
@@ -194,7 +194,7 @@ namespace SimModel.Domain
         static internal void SaveMySet()
         {
             // マスタへ反映
-            CsvOperation.SaveMySetCSV();
+            FileOperation.SaveMySetCSV();
         }
 
         /// <summary>
@@ -203,7 +203,7 @@ namespace SimModel.Domain
         static internal void LoadMySet()
         {
             // マスタへ反映
-            CsvOperation.LoadMySetCSV();
+            FileOperation.LoadMySetCSV();
         }
 
         /// <summary>
@@ -248,7 +248,7 @@ namespace SimModel.Domain
             Masters.RecentSkillNames = newNames;
 
             // マスタへ反映
-            CsvOperation.SaveRecentSkillCSV();
+            FileOperation.SaveRecentSkillCSV();
         }
 
         /// <summary>
@@ -261,7 +261,7 @@ namespace SimModel.Domain
             Masters.MyConditions.Add(condition);
 
             // マスタへ反映
-            CsvOperation.SaveMyConditionCSV();
+            FileOperation.SaveMyConditionCSV();
         }
 
         /// <summary>
@@ -274,7 +274,7 @@ namespace SimModel.Domain
             Masters.MyConditions.Remove(condition);
 
             // マスタへ反映
-            CsvOperation.SaveMyConditionCSV();
+            FileOperation.SaveMyConditionCSV();
         }
 
         /// <summary>
@@ -301,7 +301,7 @@ namespace SimModel.Domain
                     condition.Skills = newCondition.Skills;
 
                     // マスタへ反映
-                    CsvOperation.SaveMyConditionCSV();
+                    FileOperation.SaveMyConditionCSV();
 
                     return;
                 }
@@ -309,6 +309,12 @@ namespace SimModel.Domain
 
             // 万一更新先が見つからなかった場合は新規登録
             AddMyCondition(newCondition);
+        }
+
+        internal static void SaveDecoCount(Equipment deco, int count)
+        {
+            deco.DecoCount = count;
+            FileOperation.SaveDecoCountJson();
         }
     }
 }

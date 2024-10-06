@@ -1,6 +1,7 @@
 ﻿using SimModel.Config;
 using SimModel.Domain;
 using SimModel.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,20 +35,20 @@ namespace SimModel.Service
         public void LoadData()
         {
             // マスタデータ類の読み込み
-            CsvOperation.LoadSkillCSV();
-            CsvOperation.LoadHeadCSV();
-            CsvOperation.LoadBodyCSV();
-            CsvOperation.LoadArmCSV();
-            CsvOperation.LoadWaistCSV();
-            CsvOperation.LoadLegCSV();
-            CsvOperation.LoadCludeCSV();
-            CsvOperation.LoadDecoCSV();
+            FileOperation.LoadSkillCSV();
+            FileOperation.LoadHeadCSV();
+            FileOperation.LoadBodyCSV();
+            FileOperation.LoadArmCSV();
+            FileOperation.LoadWaistCSV();
+            FileOperation.LoadLegCSV();
+            FileOperation.LoadCludeCSV();
+            FileOperation.LoadDecoCSV();
 
             // セーブデータ類の読み込み
-            CsvOperation.LoadCharmCSV();
-            CsvOperation.LoadRecentSkillCSV();
-            CsvOperation.LoadMyConditionCSV();
-            CsvOperation.LoadMySetCSV();
+            FileOperation.LoadCharmCSV();
+            FileOperation.LoadRecentSkillCSV();
+            FileOperation.LoadMyConditionCSV();
+            FileOperation.LoadMySetCSV();
         }
 
         /// <summary>
@@ -326,6 +327,11 @@ namespace SimModel.Service
         public void UpdateMyCondition(SearchCondition condition)
         {
             DataManagement.UpdateMyCondition(condition);
+        }
+
+        public void SaveDecoCount(Equipment deco, int count)
+        {
+            DataManagement.SaveDecoCount(deco, count);
         }
     }
 }

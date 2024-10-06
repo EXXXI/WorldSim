@@ -185,7 +185,15 @@ namespace SimModel.Domain
             foreach (var equip in equips)
             {
                 string key = EquipColPrefix + equip.Name;
-                Variable value = SimSolver.MakeIntVar(0.0, double.PositiveInfinity, key);
+                Variable value;
+                if (equip.Kind == EquipKind.deco)
+                {
+                    value = SimSolver.MakeIntVar(0.0, equip.DecoCount, key);
+                }
+                else
+                {
+                    value = SimSolver.MakeIntVar(0.0, 1.0, key);
+                }
                 Variables.Add(key, value);
             }
         }
