@@ -67,11 +67,6 @@ namespace WorldSim.ViewModels.Controls
             {
                 CanInclude.Value = false;
             }
-            if (TrueKind.Equals(EquipKind.gskill))
-            {
-                CanInclude.Value = false;
-                CanExclude.Value = false;
-            }
             TrueName = equip.Name;
             Description.Value = equip.Description;
             DispKind.Value = TrueKind.StrWithColon();
@@ -100,10 +95,6 @@ namespace WorldSim.ViewModels.Controls
                 foreach (var deco in set.Decos)
                 {
                     list.Add(new EquipRowViewModel(deco));
-                }
-                foreach (var gskill in set.GenericSkills)
-                {
-                    list.Add(new EquipRowViewModel(gskill));
                 }
             }
             return list;

@@ -1,4 +1,6 @@
-﻿using SimModel.Config;
+﻿using Google.OrTools.ConstraintSolver;
+using Google.Protobuf.Collections;
+using SimModel.Config;
 using SimModel.Model;
 using System;
 using System.Collections.Generic;
@@ -26,10 +28,6 @@ namespace SimModel.Domain
         static internal Clude? AddExclude(string name)
         {
             Equipment? equip = Masters.GetEquipByName(name);
-            if (equip.Ideal != null)
-            {
-                equip = equip.BaseEquipment;
-            }
             if (equip == null)
             {
                 return null;
@@ -45,10 +43,6 @@ namespace SimModel.Domain
         static internal Clude? AddInclude(string name)
         {
             Equipment? equip = Masters.GetEquipByName(name);
-            if (equip.Ideal != null)
-            {
-                equip = equip.BaseEquipment;
-            }
             if (equip == null || equip.Kind == EquipKind.deco)
             {
                 // 装飾品は固定しない
@@ -64,7 +58,7 @@ namespace SimModel.Domain
                     continue;
                 }
 
-                Equipment? oldEquip = Masters.GetEquipByName(clude.Name, false);
+                Equipment? oldEquip = Masters.GetEquipByName(clude.Name);
                 if (oldEquip == null || oldEquip.Kind.Equals(equip.Kind))
                 {
                     toDelete = clude.Name;
@@ -80,67 +74,19 @@ namespace SimModel.Domain
         }
 
         /// <summary>
-        /// 錬成防具を全て除外設定に追加
-        /// </summary>
-        /// <returns>成功時true、失敗時false</returns>
-        static internal bool ExcludeAllAugmentation()
-        {
-            foreach (var aug in Masters.Augmentations)
-            {
-                string name = aug.Name;
-                Equipment? equip = Masters.GetEquipByName(name, false);
-                if (equip == null)
-                {
-                    return false;
-                }
-
-                AddClude(name, CludeKind.exclude);
-            }
-            return true;
-        }
-
-        /// <summary>
         /// 指定レア度以下を全て除外設定に追加
         /// </summary>
         /// <param name="rare">レア度</param>
         static internal void ExcludeByRare(int rare)
         {
-            foreach (var equip in Masters.Heads)
+            var equips = Masters.Heads.Union(Masters.Bodys).Union(Masters.Arms).Union(Masters.Waists).Union(Masters.Legs);
+            foreach (var equip in equips)
             {
                 if (equip.Rare <= rare)
                 {
                     AddClude(equip.Name, CludeKind.exclude);
                 }
             }
-            foreach (var equip in Masters.Bodys)
-            {
-                if (equip.Rare <= rare)
-                {
-                    AddClude(equip.Name, CludeKind.exclude);
-                }
-            }
-            foreach (var equip in Masters.Arms)
-            {
-                if (equip.Rare <= rare)
-                {
-                    AddClude(equip.Name, CludeKind.exclude);
-                }
-            }
-            foreach (var equip in Masters.Waists)
-            {
-                if (equip.Rare <= rare)
-                {
-                    AddClude(equip.Name, CludeKind.exclude);
-                }
-            }
-            foreach (var equip in Masters.Legs)
-            {
-                if (equip.Rare <= rare)
-                {
-                    AddClude(equip.Name, CludeKind.exclude);
-                }
-            }
-            return;
         }
 
         /// <summary>
@@ -176,7 +122,7 @@ namespace SimModel.Domain
             }
 
             // マスタへ反映
-            CsvOperation.SaveCludeCSV();
+            FileOperation.SaveCludeCSV();
 
             // 追加した設定
             return ret;
@@ -199,7 +145,7 @@ namespace SimModel.Domain
             }
 
             // マスタへ反映
-            CsvOperation.SaveCludeCSV();
+            FileOperation.SaveCludeCSV();
         }
 
         /// <summary>
@@ -210,54 +156,7 @@ namespace SimModel.Domain
             Masters.Cludes.Clear();
 
             // マスタへ反映
-            CsvOperation.SaveCludeCSV();
-        }
-
-        /// <summary>
-        /// 護石の追加
-        /// </summary>
-        /// <param name="skills">スキル</param>
-        /// <param name="slot1">スロット1</param>
-        /// <param name="slot2">スロット2</param>
-        /// <param name="slot3">スロット3</param>
-        /// <returns>追加した護石</returns>
-        static internal Equipment AddCharm(List<Skill> skills, int slot1, int slot2, int slot3)
-        {
-            Equipment equipment = new(EquipKind.charm);
-            equipment.Name = Guid.NewGuid().ToString();
-            equipment.Slot1 = slot1;
-            equipment.Slot2 = slot2;
-            equipment.Slot3 = slot3;
-            equipment.Skills = skills;
-
-            // 追加
-            Masters.Charms.Add(equipment);
-
-            // マスタへ反映
-            CsvOperation.SaveCharmCSV();
-
-            // 追加した護石
-            return equipment;
-        }
-
-        /// <summary>
-        /// 護石の削除
-        /// </summary>
-        /// <param name="guid">護石のID</param>
-        static internal void DeleteCharm(string guid)
-        {
-            foreach (var charm in Masters.Charms)
-            {
-                if (charm.Name.Equals(guid))
-                {
-                    // 削除
-                    Masters.Charms.Remove(charm);
-                    break;
-                }
-            }
-
-            // マスタへ反映
-            CsvOperation.SaveCharmCSV();
+            FileOperation.SaveCludeCSV();
         }
 
         /// <summary>
@@ -271,7 +170,7 @@ namespace SimModel.Domain
             Masters.MySets.Add(set);
 
             // マスタへ反映
-            CsvOperation.SaveMySetCSV();
+            FileOperation.SaveMySetCSV();
 
             return set;
         }
@@ -286,7 +185,7 @@ namespace SimModel.Domain
             Masters.MySets.Remove(set);
 
             // マスタへ反映
-            CsvOperation.SaveMySetCSV();
+            FileOperation.SaveMySetCSV();
         }
 
         /// <summary>
@@ -295,7 +194,7 @@ namespace SimModel.Domain
         static internal void SaveMySet()
         {
             // マスタへ反映
-            CsvOperation.SaveMySetCSV();
+            FileOperation.SaveMySetCSV();
         }
 
         /// <summary>
@@ -304,7 +203,7 @@ namespace SimModel.Domain
         static internal void LoadMySet()
         {
             // マスタへ反映
-            CsvOperation.LoadMySetCSV();
+            FileOperation.LoadMySetCSV();
         }
 
         /// <summary>
@@ -349,137 +248,7 @@ namespace SimModel.Domain
             Masters.RecentSkillNames = newNames;
 
             // マスタへ反映
-            CsvOperation.SaveRecentSkillCSV();
-        }
-
-        /// <summary>
-        /// 錬成装備の追加
-        /// </summary>
-        /// <param name="aug">錬成装備</param>
-        static internal void AddAugmentation(Augmentation aug)
-        {
-            // 追加
-            Masters.Augmentations.Add(aug);
-
-            // マスタへ反映
-            CsvOperation.SaveAugmentationCSV();
-        }
-
-        /// <summary>
-        /// 錬成装備の削除
-        /// </summary>
-        /// <param name="aug">錬成装備</param>
-        static internal void DeleteAugmentation(Augmentation aug)
-        {
-            // 削除
-            Masters.Augmentations.Remove(aug);
-
-            // マスタへ反映
-            CsvOperation.SaveAugmentationCSV();
-        }
-
-        /// <summary>
-        /// 錬成装備の更新
-        /// </summary>
-        /// <param name="newAugData">新データ</param>
-        internal static void UpdateAugmentation(Augmentation newAugData)
-        {
-            foreach (var aug in Masters.Augmentations)
-            {
-                if (aug.Name == newAugData.Name)
-                {
-                    aug.DispName = newAugData.DispName;
-                    aug.Kind = newAugData.Kind;
-                    aug.BaseName = newAugData.BaseName;
-                    aug.Slot1 = newAugData.Slot1;
-                    aug.Slot2 = newAugData.Slot2;
-                    aug.Slot3 = newAugData.Slot3;
-                    aug.Def = newAugData.Def;
-                    aug.Fire = newAugData.Fire;
-                    aug.Water = newAugData.Water;
-                    aug.Thunder = newAugData.Thunder;
-                    aug.Ice = newAugData.Ice;
-                    aug.Dragon = newAugData.Dragon;
-                    aug.Skills = newAugData.Skills;
-
-                    // マスタへ反映
-                    CsvOperation.SaveAugmentationCSV();
-
-                    return;
-                }
-            }
-
-            // 万一更新先が見つからなかった場合は新規登録
-            AddAugmentation(newAugData);
-        }
-
-        /// <summary>
-        /// 理想錬成の追加
-        /// </summary>
-        /// <param name="ideal">理想錬成</param>
-        internal static void AddIdealAugmentation(IdealAugmentation ideal)
-        {
-            // 追加
-            Masters.Ideals.Add(ideal);
-
-            // マスタへ反映
-            CsvOperation.SaveIdealCSV();
-        }
-
-        /// <summary>
-        /// 理想錬成の削除
-        /// </summary>
-        /// <param name="ideal">理想錬成</param>
-        internal static void DeleteIdealAugmentation(IdealAugmentation ideal)
-        {
-            // 削除
-            Masters.Ideals.Remove(ideal);
-
-            // マスタへ反映
-            CsvOperation.SaveIdealCSV();
-        }
-
-        /// <summary>
-        /// 理想錬成の更新
-        /// </summary>
-        /// <param name="newIdeal">新データ</param>
-        internal static void UpdateIdealAugmentation(IdealAugmentation newIdeal)
-        {
-            foreach (var ideal in Masters.Ideals)
-            {
-                if (ideal.Name == newIdeal.Name)
-                {
-                    ideal.Table = newIdeal.Table;
-                    ideal.IsIncludeLower = newIdeal.IsIncludeLower;
-                    ideal.IsEnabled = newIdeal.IsEnabled;
-                    ideal.DispName = newIdeal.DispName;
-                    ideal.SlotIncrement = newIdeal.SlotIncrement;
-                    ideal.GenericSkills[0] = newIdeal.GenericSkills[0];
-                    ideal.GenericSkills[1] = newIdeal.GenericSkills[1];
-                    ideal.GenericSkills[2] = newIdeal.GenericSkills[2];
-                    ideal.GenericSkills[3] = newIdeal.GenericSkills[3];
-                    ideal.GenericSkills[4] = newIdeal.GenericSkills[4];
-                    ideal.Skills = newIdeal.Skills;
-                    ideal.SkillMinuses = newIdeal.SkillMinuses;
-                    ideal.IsOne = newIdeal.IsOne;
-
-                    // マスタへ反映
-                    CsvOperation.SaveIdealCSV();
-
-                    return;
-                }
-            }
-
-            // 万一更新先が見つからなかった場合は新規登録
-            AddIdealAugmentation(newIdeal);
-        }
-
-        /// <summary>
-        /// 理想錬成保存
-        /// </summary>
-        internal static void SaveIdeal()
-        {
-            CsvOperation.SaveIdealCSV();
+            FileOperation.SaveRecentSkillCSV();
         }
 
         /// <summary>
@@ -492,7 +261,7 @@ namespace SimModel.Domain
             Masters.MyConditions.Add(condition);
 
             // マスタへ反映
-            CsvOperation.SaveMyConditionCSV();
+            FileOperation.SaveMyConditionCSV();
         }
 
         /// <summary>
@@ -505,7 +274,7 @@ namespace SimModel.Domain
             Masters.MyConditions.Remove(condition);
 
             // マスタへ反映
-            CsvOperation.SaveMyConditionCSV();
+            FileOperation.SaveMyConditionCSV();
         }
 
         /// <summary>
@@ -532,7 +301,7 @@ namespace SimModel.Domain
                     condition.Skills = newCondition.Skills;
 
                     // マスタへ反映
-                    CsvOperation.SaveMyConditionCSV();
+                    FileOperation.SaveMyConditionCSV();
 
                     return;
                 }
@@ -540,6 +309,12 @@ namespace SimModel.Domain
 
             // 万一更新先が見つからなかった場合は新規登録
             AddMyCondition(newCondition);
+        }
+
+        internal static void SaveDecoCount(Equipment deco, int count)
+        {
+            deco.DecoCount = count;
+            FileOperation.SaveDecoCountJson();
         }
     }
 }

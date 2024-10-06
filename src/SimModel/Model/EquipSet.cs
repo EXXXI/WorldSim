@@ -16,11 +16,6 @@ namespace SimModel.Model
         private const string InvalidSlot = "invalid";
 
         /// <summary>
-        /// 錬成コスト不正時文字列
-        /// </summary>
-        private const string InvalidGSkill = "invalid";
-
-        /// <summary>
         /// 頭装備
         /// </summary>
         public Equipment Head { get; set; } = new Equipment(EquipKind.head);
@@ -54,11 +49,6 @@ namespace SimModel.Model
         /// 装飾品(リスト)
         /// </summary>
         public List<Equipment> Decos { get; set; } = new();
-
-        /// <summary>
-        /// 理想錬成用のコストでつくスキル
-        /// </summary>
-        public List<Equipment> GenericSkills { get; set; } = new();
 
         /// <summary>
         /// 武器スロ1つ目
@@ -97,10 +87,6 @@ namespace SimModel.Model
                 foreach (var deco in Decos)
                 {
                     ret.Add(deco);
-                }
-                foreach (var gSkill in GenericSkills)
-                {
-                    ret.Add(gSkill);
                 }
                 return ret;
             }
@@ -231,47 +217,6 @@ namespace SimModel.Model
                     JoinSkill(ret, equip.Skills);
                 }
 
-                // 風雷合一：風雷合一判定
-                int furaiPlus = 0;
-                foreach (var skill in ret)
-                {
-                    if (LogicConfig.Instance.FuraiName.Equals(skill.Name))
-                    {
-                        switch (skill.Level)
-                        {
-                            case 4:
-                                furaiPlus = 1;
-                                break;
-                            case 5:
-                                furaiPlus = 2;
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                }
-
-                // 風雷合一：スキル追加
-                if (furaiPlus > 0)
-                {
-                    // 対象洗い出し
-                    List<Skill> furaiTarget = new List<Skill>();
-                    JoinSkill(furaiTarget, Head.Skills, true);
-                    JoinSkill(furaiTarget, Body.Skills, true);
-                    JoinSkill(furaiTarget, Arm.Skills, true);
-                    JoinSkill(furaiTarget, Waist.Skills, true);
-                    JoinSkill(furaiTarget, Leg.Skills, true);
-
-                    // スキルレベル設定
-                    foreach (var skill in furaiTarget)
-                    {
-                        skill.Level = furaiPlus;
-                    }
-
-                    // スキルレベル追加
-                    JoinSkill(ret, furaiTarget);
-                }
-
                 // スキルレベル最大値調整
                 foreach (var skill in ret)
                 {
@@ -376,7 +321,7 @@ namespace SimModel.Model
                     {
                         continue;
                     }
-                    Equipment? deco = Masters.GetEquipByName(decoName, false);
+                    Equipment? deco = Masters.GetEquipByName(decoName);
                     if (deco != null)
                     {
                         Decos.Add(deco);
@@ -423,46 +368,6 @@ namespace SimModel.Model
         }
 
         /// <summary>
-        /// 理想錬成の追加スキルのCSV表記
-        /// </summary>
-        public string GSkillNameCSV
-        {
-            get
-            {
-                StringBuilder sb = new();
-                bool isFirst = true;
-                foreach (var gskill in GenericSkills)
-                {
-                    if (!isFirst)
-                    {
-                        sb.Append(',');
-                    }
-                    sb.Append(gskill.DispName);
-                    isFirst = false;
-                }
-                return sb.ToString();
-            }
-            set
-            {
-                GenericSkills = new List<Equipment>();
-                string[] splitted = value.Split(',');
-                foreach (var label in splitted)
-                {
-                    if (string.IsNullOrWhiteSpace(label))
-                    {
-                        continue;
-                    }
-                    Equipment? gskill = Masters.GetEquipByName(label, false);
-                    if (gskill != null)
-                    {
-                        GenericSkills.Add(gskill);
-                    }
-                }
-                SortGSkills();
-            }
-        }
-
-        /// <summary>
         /// 武器スロの表示用形式(2-2-0など)
         /// </summary>
         public string WeaponSlotDisp
@@ -499,7 +404,6 @@ namespace SimModel.Model
                 return sb.ToString();
             }
         }
-
 
         /// <summary>
         /// 装飾品のCSV表記 3行
@@ -549,13 +453,8 @@ namespace SimModel.Model
                 StringBuilder sb = new();
                 if (!IsDecoValid)
                 {
-                    sb.Append("※傀異錬成防具のスロットを減らしたため、\n");
+                    sb.Append("※何らかの理由で防具のスロット情報が不正です\n");
                     sb.Append("※このマイセットの装飾品は装備しきれません\n");
-                }
-                if (!IsGSkillValid)
-                {
-                    sb.Append("※理想錬成防具の追加スキル数を減らしたため、\n");
-                    sb.Append("※このマイセットの追加スキルは実現できません\n");
                 }
                 sb.Append("武器スロ：");
                 sb.Append(WeaponSlotDisp);
@@ -594,59 +493,11 @@ namespace SimModel.Model
                 sb.Append('\n');
                 sb.Append(EquipKind.deco.StrWithColon());
                 sb.Append(DecoNameCSV);
-                if (GenericSkills.Count > 0)
-                {
-                    sb.Append('\n');
-                    sb.Append(EquipKind.gskill.StrWithColon());
-                    sb.Append(GSkillNameCSV);
-                }
                 sb.Append('\n');
                 sb.Append("空きスロ：");
                 sb.Append(EmptySlotNum);
                 sb.Append('\n'); 
                 sb.Append("-----------");
-                if (HasAugmentation)
-                {
-                    sb.Append('\n');
-                    sb.Append("(錬成詳細)");
-                    if (Head.BaseEquipment != null)
-                    {
-                        sb.Append('\n');
-                        sb.Append("■" + Head.Kind.Str());
-                        sb.Append('\n');
-                        sb.Append(Head.DetailDispName);
-                    }
-                    if (Body.BaseEquipment != null)
-                    {
-                        sb.Append('\n');
-                        sb.Append("■" + Body.Kind.Str());
-                        sb.Append('\n');
-                        sb.Append(Body.DetailDispName);
-                    }
-                    if (Arm.BaseEquipment != null)
-                    {
-                        sb.Append('\n');
-                        sb.Append("■" + Arm.Kind.Str());
-                        sb.Append('\n');
-                        sb.Append(Arm.DetailDispName);
-                    }
-                    if (Waist.BaseEquipment != null)
-                    {
-                        sb.Append('\n');
-                        sb.Append("■" + Waist.Kind.Str());
-                        sb.Append('\n');
-                        sb.Append(Waist.DetailDispName);
-                    }
-                    if (Leg.BaseEquipment != null)
-                    {
-                        sb.Append('\n');
-                        sb.Append("■" + Leg.Kind.Str());
-                        sb.Append('\n');
-                        sb.Append(Leg.DetailDispName);
-                    }
-                    sb.Append('\n');
-                    sb.Append("-----------");
-                }
                 if (IsDecoValid)
                 {
                     sb.Append('\n');
@@ -807,58 +658,6 @@ namespace SimModel.Model
         }
 
         /// <summary>
-        /// 理想錬成防具の錬成スキルの空き
-        /// </summary>
-        public string EmptyGSkillNum
-        {
-            get
-            {
-                int[] reqGSkills = { 0, 0, 0, 0, 0 }; // 要求
-                int[] hasGSkills = { 0, 0, 0, 0, 0 }; // 所持
-                int[] restGSkills = { 0, 0, 0, 0, 0 }; // 空き
-
-
-                
-                foreach (var gskill in GenericSkills)
-                {
-                    for (int i = 0; i < 5; i++)
-                    {
-                        reqGSkills[i] += gskill.GenericSkills[i];
-                    }
-                }
-                CalcEquipHasGSkill(hasGSkills, Head);
-                CalcEquipHasGSkill(hasGSkills, Body);
-                CalcEquipHasGSkill(hasGSkills, Arm);
-                CalcEquipHasGSkill(hasGSkills, Waist);
-                CalcEquipHasGSkill(hasGSkills, Leg);
-
-                // 空き算出
-                for (int i = 0; i < 5; i++)
-                {
-                    restGSkills[i] = hasGSkills[i] - reqGSkills[i];
-                }
-
-                // 足りない分は1Lv上を消費する
-                for (int i = 0; i < 4; i++)
-                {
-                    if (restGSkills[i] < 0)
-                    {
-                        restGSkills[i + 1] += restGSkills[i];
-                        restGSkills[i] = 0;
-                    }
-                }
-
-                if (restGSkills[4] < 0)
-                {
-                    // スロット不足
-                    return InvalidGSkill;
-                }
-
-                return $"c3:{restGSkills[0]}, c6:{restGSkills[1]}, c9:{restGSkills[2]}, c12:{restGSkills[3]}, c15:{restGSkills[4]}";
-            }
-        }
-
-        /// <summary>
         /// 装飾品がはめられる状態かチェック
         /// </summary>
         private bool IsDecoValid
@@ -866,53 +665,6 @@ namespace SimModel.Model
             get
             {
                 return EmptySlotNum != InvalidSlot;
-            }
-        }
-
-        /// <summary>
-        /// 理想錬成の追加スキルが実現可能な状態かチェック
-        /// </summary>
-        public bool IsGSkillValid
-        {
-            get
-            {
-                return EmptyGSkillNum != InvalidGSkill;
-            }
-        }
-
-        /// <summary>
-        /// 錬成を利用しているかどうかチェック(理想錬成も含む)
-        /// </summary>
-        public bool HasAugmentation
-        {
-            get
-            {
-                foreach (var equip in Equipments)
-                {
-                    if (equip.BaseEquipment != null)
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// 理想錬成を利用しているかどうかチェック
-        /// </summary>
-        public bool HasIdeal
-        {
-            get
-            {
-                foreach (var equip in Equipments)
-                {
-                    if (equip.Ideal != null)
-                    {
-                        return true;
-                    }
-                }
-                return false;
             }
         }
 
@@ -936,26 +688,6 @@ namespace SimModel.Model
         }
 
         /// <summary>
-        /// 理想錬成スキルのソート
-        /// </summary>
-        public void SortGSkills()
-        {
-            List<Equipment> newGSkills = new List<Equipment>();
-            for (int i = 4; i >= 0; i--)
-            {
-                foreach (var gskill in GenericSkills)
-                {
-                    if (gskill.GenericSkills[i] == 1)
-                    {
-                        newGSkills.Add(gskill);
-                    }
-                }
-            }
-            GenericSkills = newGSkills;
-        }
-
-
-        /// <summary>
         /// 防具のスロット数計算
         /// </summary>
         /// <param name="hasSlots">スロット数格納用配列</param>
@@ -973,19 +705,6 @@ namespace SimModel.Model
             if (equip.Slot3 > 0)
             {
                 hasSlots[equip.Slot3 - 1]++;
-            }
-        }
-
-        /// <summary>
-        /// 防具のコスト数計算
-        /// </summary>
-        /// <param name="hasGSkills">コスト数格納用配列</param>
-        /// <param name="equip">装備</param>
-        private static void CalcEquipHasGSkill(int[] hasGSkills, Equipment equip)
-        {
-            for (int i = 0; i < 5; i++)
-            {
-                hasGSkills[i] += equip.GenericSkills[i];
             }
         }
 
@@ -1020,35 +739,6 @@ namespace SimModel.Model
                 }
             }
             return baseSkills;
-        }
-
-        /// <summary>
-        /// スキルの追加(同名スキルはスキルレベルを加算)
-        ///  最大値のチェックはしていない
-        /// </summary>
-        /// <param name="baseSkills">スキル一覧</param>
-        /// <param name="newSkills">追加するスキル</param>
-        /// <param name="excludeAdditional">錬成の追加スキルは除外する場合true</param>
-        /// <returns></returns>
-        //
-        private List<Skill> JoinSkill(List<Skill> baseSkills, List<Skill> newSkills, bool excludeAdditional)
-        {
-            List<Skill> skills = new();
-            if (excludeAdditional)
-            {
-                foreach (var skill in newSkills)
-                {
-                    if (!skill.IsAdditional)
-                    {
-                        skills.Add(skill);
-                    }
-                }
-                return JoinSkill(baseSkills, skills);
-            }
-            else
-            {
-                return JoinSkill(baseSkills, newSkills);
-            }
         }
     }
 }

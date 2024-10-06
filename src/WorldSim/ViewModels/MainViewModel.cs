@@ -1,10 +1,8 @@
 ﻿using Prism.Mvvm;
 using Reactive.Bindings;
-using Reactive.Bindings.Extensions;
-using WorldSim.ViewModels.SubViews;
 using SimModel.Service;
-using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using WorldSim.ViewModels.SubViews;
 
 namespace WorldSim.ViewModels
 {
@@ -77,19 +75,9 @@ namespace WorldSim.ViewModels
         public ReactivePropertySlim<CludeTabViewModel> CludeTabVM { get; } = new();
 
         /// <summary>
-        /// 護石画面のVM
+        /// 装飾品設定画面のVM
         /// </summary>
-        public ReactivePropertySlim<CharmTabViewModel> CharmTabVM { get; } = new();
-
-        /// <summary>
-        /// 傀異錬成画面のVM
-        /// </summary>
-        public ReactivePropertySlim<AugmentationTabViewModel> AugmentationTabVM { get; } = new();
-
-        /// <summary>
-        /// 理想錬成画面のVM
-        /// </summary>
-        public ReactivePropertySlim<IdealAugmentationTabViewModel> IdealAugmentationTabVM { get; } = new();
+        public ReactivePropertySlim<DecoTabViewModel> DecoTabVM { get; } = new();
 
         /// <summary>
         /// マイセット画面のVM
@@ -131,9 +119,7 @@ namespace WorldSim.ViewModels
             SkillSelectTabVM.Value = new SkillSelectTabViewModel();
             SimulatorTabVM.Value = new SimulatorTabViewModel();
             CludeTabVM.Value = new CludeTabViewModel();
-            CharmTabVM.Value = new CharmTabViewModel();
-            AugmentationTabVM.Value = new AugmentationTabViewModel();
-            IdealAugmentationTabVM.Value = new IdealAugmentationTabViewModel();
+            DecoTabVM.Value = new DecoTabViewModel();
             MySetTabVM.Value = new MySetTabViewModel();
             LicenseTabVM.Value = new LicenseTabViewModel();
 
@@ -178,20 +164,8 @@ namespace WorldSim.ViewModels
         /// </summary>
         internal void LoadEquips()
         {
-            // 錬成情報を反映
-            Simulator.RefreshEquipmentMasters();
-
-            // 錬成画面用のVM設定
-            AugmentationTabVM.Value.LoadAugmentations();
-
-            // 理想錬成画面用のVM設定
-            IdealAugmentationTabVM.Value.LoadIdealAugmentations();
-
             // 除外固定画面用のVMの設定
             CludeTabVM.Value.LoadEquipsForClude();
-
-            // 護石画面用のVMの設定
-            CharmTabVM.Value.LoadEquipsForCharm();
         }
 
         /// <summary>

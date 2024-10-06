@@ -79,36 +79,9 @@ namespace SimModel.Model
         public int RowNo { get; set; } = int.MaxValue;
 
         /// <summary>
-        /// スキル(錬成スキルを別個に扱う)
+        /// スキル
         /// </summary>
         public List<Skill> Skills { get; set; } = new();
-
-        /// <summary>
-        /// スキル(錬成スキルを合算して扱う)
-        /// </summary>
-        public List<Skill> MargedSkills {
-            get
-            {
-                List<Skill> margedSkills = new();
-                foreach (Skill skill in Skills)
-                {
-                    bool isExist = false;
-                    foreach (Skill margedSkill in margedSkills)
-                    {
-                        if (skill.Name == margedSkill.Name)
-                        {
-                            margedSkill.Level += skill.Level;
-                            isExist = true;
-                        }
-                    }
-                    if (!isExist)
-                    {
-                        margedSkills.Add(new Skill(skill.Name, skill.Level));
-                    }
-                }
-                return margedSkills;
-            }
-        }
 
         /// <summary>
         /// 装備種類
@@ -116,24 +89,9 @@ namespace SimModel.Model
         public EquipKind Kind { get; set; }
 
         /// <summary>
-        /// ベース防具(非錬成防具の場合null)
+        /// (装飾品のみ)所持数
         /// </summary>
-        public Equipment? BaseEquipment { get; set; } = null;
-
-        /// <summary>
-        /// 錬成テーブル
-        /// </summary>
-        public int AugmentationTable { get; set; }
-
-        /// <summary>
-        /// 各コストごとの追加可能スキル数(理想錬成用)
-        /// </summary>
-        public int[] GenericSkills { get; set; } = new int[5];
-
-        /// <summary>
-        /// 理想錬成データ
-        /// </summary>
-        public IdealAugmentation Ideal { get; set; }
+        public int DecoCount { get; set; } = 0;　
 
         /// <summary>
         /// デフォルトコンストラクタ
@@ -153,75 +111,16 @@ namespace SimModel.Model
         }
 
         /// <summary>
-        /// コピーコンストラクタ
-        /// </summary>
-        /// <param name="equip"></param>
-        public Equipment(Equipment equip)
-        {
-            Name = equip.Name;
-            Sex = equip.Sex;
-            Rare = equip.Rare;
-            Slot1 = equip.Slot1;
-            Slot2 = equip.Slot2;
-            Slot3 = equip.Slot3;
-            Mindef = equip.Mindef;
-            Maxdef = equip.Maxdef;
-            Fire = equip.Fire;
-            Water = equip.Water;
-            Thunder = equip.Thunder;
-            Ice = equip.Ice;
-            Dragon = equip.Dragon;
-            Kind = equip.Kind;
-            foreach (var skill in equip.Skills)
-            {
-                Skills.Add(skill);
-            }
-        }
-
-        /// <summary>
         /// 表示用装備名の本体
         /// </summary>
         private string? dispName = null;
         /// <summary>
-        /// 表示用装備名(護石は特殊処理、錬成で名前付けした場合はそれを優先)
+        /// 表示用装備名(特殊処理が必要な場合、保持してそれを利用)
         /// </summary>
         public string DispName { 
             get
             {
-                if (!string.IsNullOrWhiteSpace(dispName))
-                {
-                    return dispName;
-                }
-                if (!Kind.Equals(EquipKind.charm) || string.IsNullOrWhiteSpace(Name))
-                {
-                    return Name;
-                }
-                else
-                {
-                    StringBuilder sb = new StringBuilder();
-                    bool isFirst = true;
-                    foreach (var skill in Skills)
-                    {
-                        if (!isFirst)
-                        {
-                            sb.Append(',');
-                        }
-                        sb.Append(skill.Name);
-                        sb.Append(skill.Level);
-                        isFirst = false;
-                    }
-                    if (!isFirst)
-                    {
-                        sb.Append(',');
-                    }
-                    sb.Append(Slot1);
-                    sb.Append('-');
-                    sb.Append(Slot2);
-                    sb.Append('-');
-                    sb.Append(Slot3);
-
-                    return sb.ToString();
-                }
+                return string.IsNullOrWhiteSpace(dispName) ? Name : dispName;
             }
             set
             {
@@ -229,6 +128,7 @@ namespace SimModel.Model
             }
         }
 
+        // TODO: 現状、DispNameと同等。必要があれば3行程度に情報を付加
         /// <summary>
         /// 一覧での詳細表示用
         /// </summary>
@@ -236,55 +136,7 @@ namespace SimModel.Model
         {
             get
             {
-                if (BaseEquipment == null)
-                {
-                    return DispName;
-                }
-
-                StringBuilder sb = new();
-                sb.AppendLine(DispName);
-
-                // スロット計算
-                int addSlotSum = 0;
-                addSlotSum += Slot1 + Slot2 + Slot3;
-                addSlotSum -= BaseEquipment.Slot1 + BaseEquipment.Slot2 + BaseEquipment.Slot3;
-                sb.AppendLine("スロット追加：" + addSlotSum);
-
-                // スキル一覧
-                bool isFirst = true;
-                foreach (var skill in Skills)
-                {
-                    if (skill.IsAdditional)
-                    {
-                        if (isFirst)
-                        {
-                            isFirst = false;
-                        }
-                        else
-                        {
-                            sb.Append(", ");
-                        }
-                        sb.Append($"{skill.Name}{skill.Level:+#;-#;}");
-                    }
-                }
-                for (int i = 0; i < 5; i++)
-                {
-                    int level = GenericSkills[i];
-                    if (level != 0)
-                    {
-                        if (isFirst)
-                        {
-                            isFirst = false;
-                        }
-                        else
-                        {
-                            sb.Append(", ");
-                        }
-                        sb.Append($"c{i * 3 + 3}{level:+#;-#;}");
-                    }
-                }
-
-                return sb.ToString();
+                return DispName;
             }
         }
 
@@ -336,87 +188,6 @@ namespace SimModel.Model
                     sb.Append('\n');
                     sb.Append(skill.Description);
                 }
-                if (GenericSkills[0] > 0)
-                {
-                    sb.Append('\n');
-                    sb.Append("c3スキル +" + GenericSkills[0]);
-                }
-                if (GenericSkills[1] > 0)
-                {
-                    sb.Append('\n');
-                    sb.Append("c6スキル +" + GenericSkills[1]);
-                }
-                if (GenericSkills[2] > 0)
-                {
-                    sb.Append('\n');
-                    sb.Append("c9スキル +" + GenericSkills[2]);
-                }
-                if (GenericSkills[3] > 0)
-                {
-                    sb.Append('\n');
-                    sb.Append("c12スキル +" + GenericSkills[3]);
-                }
-                if (GenericSkills[4] > 0)
-                {
-                    sb.Append('\n');
-                    sb.Append("c15スキル +" + GenericSkills[4]);
-                }
-
-                // 理想錬成情報
-                if (Ideal != null)
-                {
-                    sb.Append('\n');
-                    sb.Append("-----------");
-                    sb.Append('\n');
-                    sb.Append("(理想錬成の内容)");
-                    sb.Append('\n');
-                    sb.Append("スロット追加：");
-                    sb.Append(Ideal.SlotIncrement);
-                    foreach (var skill in Skills)
-                    {
-                        if (skill.IsAdditional)
-                        {
-                            sb.Append('\n');
-                            sb.Append(skill.Description);
-                        }
-                    }
-                    if (GenericSkills[0] > 0)
-                    {
-                        sb.Append('\n');
-                        sb.Append("c3スキル +" + GenericSkills[0]);
-                    }
-                    if (GenericSkills[1] > 0)
-                    {
-                        sb.Append('\n');
-                        sb.Append("c6スキル +" + GenericSkills[1]);
-                    }
-                    if (GenericSkills[2] > 0)
-                    {
-                        sb.Append('\n');
-                        sb.Append("c9スキル +" + GenericSkills[2]);
-                    }
-                    if (GenericSkills[3] > 0)
-                    {
-                        sb.Append('\n');
-                        sb.Append("c12スキル +" + GenericSkills[3]);
-                    }
-                    if (GenericSkills[4] > 0)
-                    {
-                        sb.Append('\n');
-                        sb.Append("c15スキル +" + GenericSkills[4]);
-                    }
-                }
-
-                // ベース防具情報
-                if (BaseEquipment != null)
-                {
-                    sb.Append('\n');
-                    sb.Append("-----------");
-                    sb.Append('\n');
-                    sb.Append("(ベース防具)");
-                    sb.Append('\n');
-                    sb.Append(BaseEquipment.Description);
-                }
 
                 return sb.ToString();
             }
@@ -442,14 +213,6 @@ namespace SimModel.Model
                         sb.Append(Slot2);
                         sb.Append('-');
                         sb.Append(Slot3);
-                    }
-                    for (int i = 0; i < 5; i++)
-                    {
-                        for (int j = 0; j < GenericSkills[i]; j++)
-                        {
-                            sb.Append(',');
-                            sb.Append("c" + ((i * 3) + 3));
-                        }
                     }
                 }
 

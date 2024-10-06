@@ -37,16 +37,6 @@ namespace WorldSim.ViewModels.SubViews
         public ReactiveCommand DeleteAllCludeCommand { get; } = new ReactiveCommand();
 
         /// <summary>
-        /// 錬成防具を除外するコマンド
-        /// </summary>
-        public ReactiveCommand ExcludeAllAugmentationCommand { get; } = new ReactiveCommand();
-
-        /// <summary>
-        /// レア9以下防具を除外するコマンド
-        /// </summary>
-        public ReactiveCommand ExcludeRare9Command { get; } = new ReactiveCommand();
-
-        /// <summary>
         /// フィルタをクリアするコマンド
         /// </summary>
         public ReactiveCommand ClearFilterCommand { get; } = new ReactiveCommand();
@@ -63,8 +53,6 @@ namespace WorldSim.ViewModels.SubViews
         {
             // コマンドを設定
             DeleteAllCludeCommand.Subscribe(_ => DeleteAllClude());
-            ExcludeAllAugmentationCommand.Subscribe(_ => ExcludeAllAugmentation());
-            ExcludeRare9Command.Subscribe(_ => ExcludeRare9());
             ClearFilterCommand.Subscribe(_ => ClearFilter());
             ApplyFilterCommand.Subscribe(_ => ApplyFilter());
         }
@@ -218,36 +206,6 @@ namespace WorldSim.ViewModels.SubViews
 
             // ログ表示
             SetStatusBar("固定・除外の全解除完了");
-        }
-
-        /// <summary>
-        /// 錬成防具を全て除外
-        /// </summary>
-        private void ExcludeAllAugmentation()
-        {
-            // 除外
-            Simulator.ExcludeAllAugmentation();
-
-            // 除外固定のマスタをまとめてリロード
-            LoadGridData();
-
-            // ログ表示
-            SetStatusBar("錬成防具の全除外完了");
-        }
-
-        /// <summary>
-        /// レア9以下を全て除外
-        /// </summary>
-        private void ExcludeRare9()
-        {
-            // 除外
-            Simulator.ExcludeByRare(9);
-
-            // 除外固定のマスタをまとめてリロード
-            LoadGridData();
-
-            // ログ表示
-            SetStatusBar("レア9以下防具の全除外完了");
         }
 
         /// <summary>

@@ -118,21 +118,6 @@ namespace WorldSim.ViewModels.SubViews
         public ReactivePropertySlim<ObservableCollection<string>> SexMaster { get; } = new();
 
         /// <summary>
-        /// 理想錬成利用フラグ
-        /// </summary>
-        public ReactivePropertySlim<bool> IsIncludeIdeal { get; } = new(false);
-
-        /// <summary>
-        /// 通常装備優先フラグ
-        /// </summary>
-        public ReactivePropertySlim<bool> IsPrioritizeNoIdeal { get; } = new(false);
-
-        /// <summary>
-        /// 実際の装備で互換できる理想錬成を除外するフラグ
-        /// </summary>
-        public ReactivePropertySlim<bool> IsExcludeAbstract { get; } = new(false);
-
-        /// <summary>
         /// 検索コマンド
         /// </summary>
         public AsyncReactiveCommand SearchCommand { get; private set; }
@@ -202,20 +187,6 @@ namespace WorldSim.ViewModels.SubViews
             SearchExtraSkillCommand = isFree.ToAsyncReactiveCommand().WithSubscribe(async () => await SearchExtraSkill()).AddTo(Disposable);
             ClearAllCommand.Subscribe(_ => ClearSearchCondition());
             AddMyConditionCommand.Subscribe(_ => AddMyCondition());
-            IsIncludeIdeal.Subscribe(x =>
-            {
-                if (x == false)
-                {
-                    IsPrioritizeNoIdeal.Value = false;
-                }
-            });
-            IsPrioritizeNoIdeal.Subscribe(x =>
-            {
-                if (x == false)
-                {
-                    IsExcludeAbstract.Value = false;
-                }
-            });
         }
 
         /// <summary>
@@ -477,15 +448,6 @@ namespace WorldSim.ViewModels.SubViews
             condition.Thunder = ParseOrNull(Thunder.Value);
             condition.Ice = ParseOrNull(Ice.Value);
             condition.Dragon = ParseOrNull(Dragon.Value);
-
-            // 理想錬成の有無
-            condition.IncludeIdealAugmentation = IsIncludeIdeal.Value;
-
-            // 通常装備優先の有無
-            condition.PrioritizeNoIdeal = IsPrioritizeNoIdeal.Value;
-
-            // 通常装備で組める場合の除外有無
-            condition.ExcludeAbstract = IsExcludeAbstract.Value;
 
             // 名前・ID
             condition.ID = Guid.NewGuid().ToString();

@@ -1,13 +1,12 @@
 ﻿using Reactive.Bindings;
-using WorldSim.Util;
-using WorldSim.ViewModels.BindableWrapper;
-using WorldSim.ViewModels.Controls;
 using SimModel.Model;
 using SimModel.Service;
 using System;
 using System.Collections.ObjectModel;
-using System.DirectoryServices;
 using System.Windows;
+using WorldSim.Util;
+using WorldSim.ViewModels.BindableWrapper;
+using WorldSim.ViewModels.Controls;
 
 namespace WorldSim.ViewModels.SubViews
 {

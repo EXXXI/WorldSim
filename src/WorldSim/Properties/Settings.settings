@@ -20,9 +20,6 @@
     <Setting Name="SimulatorIndexes" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="AugmentationIndexes" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
     <Setting Name="MySetIndexes" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
