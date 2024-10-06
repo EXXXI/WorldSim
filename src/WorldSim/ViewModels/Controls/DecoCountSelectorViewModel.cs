@@ -17,9 +17,9 @@ namespace WorldSim.ViewModels.Controls
 
         public ReactivePropertySlim<ObservableCollection<int>> DecoCountList { get; set; } = new();
 
-        private Equipment BaseDeco { get; set; }
+        private Deco BaseDeco { get; set; }
 
-        public DecoCountSelectorViewModel(Equipment deco)
+        public DecoCountSelectorViewModel(Deco deco)
         {
             BaseDeco = deco;
             DispName.Value = deco.DispName;

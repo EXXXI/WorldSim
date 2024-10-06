@@ -311,7 +311,7 @@ namespace SimModel.Domain
             AddMyCondition(newCondition);
         }
 
-        internal static void SaveDecoCount(Equipment deco, int count)
+        internal static void SaveDecoCount(Deco deco, int count)
         {
             deco.DecoCount = count;
             FileOperation.SaveDecoCountJson();

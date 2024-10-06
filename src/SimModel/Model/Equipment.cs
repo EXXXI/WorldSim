@@ -89,11 +89,6 @@ namespace SimModel.Model
         public EquipKind Kind { get; set; }
 
         /// <summary>
-        /// (装飾品のみ)所持数
-        /// </summary>
-        public int DecoCount { get; set; } = 0;　
-
-        /// <summary>
         /// デフォルトコンストラクタ
         /// </summary>
         public Equipment()

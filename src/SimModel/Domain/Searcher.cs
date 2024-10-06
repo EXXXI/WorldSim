@@ -186,9 +186,9 @@ namespace SimModel.Domain
             {
                 string key = EquipColPrefix + equip.Name;
                 Variable value;
-                if (equip.Kind == EquipKind.deco)
+                if (equip is Deco deco)
                 {
-                    value = SimSolver.MakeIntVar(0.0, equip.DecoCount, key);
+                    value = SimSolver.MakeIntVar(0.0, deco.DecoCount, key);
                 }
                 else
                 {

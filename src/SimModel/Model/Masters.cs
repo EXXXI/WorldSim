@@ -46,7 +46,7 @@ namespace SimModel.Model
         /// <summary>
         /// 装飾品マスタ
         /// </summary>
-        public static List<Equipment> Decos { get; set; } = new();
+        public static List<Deco> Decos { get; set; } = new();
 
         /// <summary>
         /// 除外固定マスタ
