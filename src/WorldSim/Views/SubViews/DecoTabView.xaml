@@ -7,10 +7,10 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <ScrollViewer>
-        <ItemsControl ItemsSource="{Binding Path=Decos.Value, Mode=OneWay}">
+        <ItemsControl ItemsSource="{Binding Path=Containers.Value, Mode=OneWay}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <controls:DecoCountSelector Margin="20,5"/>
+                    <controls:DecoCountSelectorContainer Margin="20,5"/>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
             <ItemsControl.ItemsPanel>

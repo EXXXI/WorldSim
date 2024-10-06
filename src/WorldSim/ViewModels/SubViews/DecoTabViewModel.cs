@@ -13,16 +13,17 @@ namespace WorldSim.ViewModels.SubViews
 {
     internal class DecoTabViewModel : ChildViewModelBase
     {
-        public ReactivePropertySlim<ObservableCollection<DecoCountSelectorViewModel>> Decos { get; set; } = new();
+        public ReactivePropertySlim<ObservableCollection<DecoCountSelectorContainerViewModel>> Containers { get; set; } = new();
 
         public DecoTabViewModel()
         {
-            ObservableCollection<DecoCountSelectorViewModel> decos = new();
-            foreach (var deco in Masters.Decos)
+            var groups = Masters.Decos.GroupBy(d => d.DecoCateory);
+            ObservableCollection<DecoCountSelectorContainerViewModel> containers = new();
+            foreach (var group in groups)
             {
-                decos.Add(new DecoCountSelectorViewModel(deco));
+                containers.Add(new DecoCountSelectorContainerViewModel(group.Key, group));
             }
-            Decos.ChangeCollection(decos);
+            Containers.ChangeCollection(containers);
         }
     }
 }

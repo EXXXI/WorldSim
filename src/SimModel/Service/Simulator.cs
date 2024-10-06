@@ -329,7 +329,7 @@ namespace SimModel.Service
             DataManagement.UpdateMyCondition(condition);
         }
 
-        public void SaveDecoCount(Equipment deco, int count)
+        public void SaveDecoCount(Deco deco, int count)
         {
             DataManagement.SaveDecoCount(deco, count);
         }

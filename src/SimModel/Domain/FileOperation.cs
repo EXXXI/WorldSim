@@ -219,7 +219,7 @@ namespace SimModel.Domain
 
             foreach (ICsvLine line in CsvReader.ReadFromText(csv))
             {
-                Equipment equip = new Equipment(EquipKind.deco);
+                Deco equip = new Deco(EquipKind.deco);
                 equip.Name = line[@"名前"];
                 equip.Sex = Sex.all;
                 equip.Rare = ParseUtil.Parse(line[@"レア度"]);
@@ -244,9 +244,9 @@ namespace SimModel.Domain
                     }
                     skills.Add(new Skill(skill, ParseUtil.Parse(level)));
                 }
+                equip.Skills = skills;
 
                 // 所持数の初期値(泣シミュに準拠)
-                equip.Skills = skills;
                 if (equip.Slot1 == 4)
                 {
                     equip.DecoCount = 0;
@@ -254,6 +254,23 @@ namespace SimModel.Domain
                 else
                 {
                     equip.DecoCount = 7;
+                }
+
+                // カテゴリ
+                if (equip.Slot1 == 4)
+                {
+                    if (skills.Count < 2)
+                    {
+                        equip.DecoCateory = "4スロ単一スキル";
+                    }
+                    else
+                    {
+                        equip.DecoCateory = $"4スロ{skills[1].Name}複合";
+                    }
+                }
+                else
+                {
+                    equip.DecoCateory = skills[0].Category;
                 }
 
                 Masters.Decos.Add(equip);
