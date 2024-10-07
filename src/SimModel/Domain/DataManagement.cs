@@ -1,12 +1,7 @@
-﻿using Google.OrTools.ConstraintSolver;
-using Google.Protobuf.Collections;
-using SimModel.Config;
+﻿using SimModel.Config;
 using SimModel.Model;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SimModel.Domain
 {
@@ -311,6 +306,11 @@ namespace SimModel.Domain
             AddMyCondition(newCondition);
         }
 
+        /// <summary>
+        /// 装飾品の所持数の変更を保存
+        /// </summary>
+        /// <param name="deco">対象の装飾品</param>
+        /// <param name="count">変更後の個数</param>
         internal static void SaveDecoCount(Deco deco, int count)
         {
             deco.DecoCount = count;

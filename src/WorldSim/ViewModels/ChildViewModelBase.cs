@@ -39,11 +39,6 @@ namespace WorldSim.ViewModels
         protected MySetTabViewModel MySetTabVM { get => MainVM.MySetTabVM.Value; }
 
         /// <summary>
-        /// ライセンス画面のVM
-        /// </summary>
-        protected LicenseTabViewModel LicenseTabVM { get => MainVM.LicenseTabVM.Value; }
-
-        /// <summary>
         /// シミュ本体
         /// MainViewModelから参照を取得
         /// </summary>

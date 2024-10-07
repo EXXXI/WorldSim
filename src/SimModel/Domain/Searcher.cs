@@ -188,6 +188,7 @@ namespace SimModel.Domain
                 Variable value;
                 if (equip is Deco deco)
                 {
+                    // 装飾品は所持数を上限とする
                     value = SimSolver.MakeIntVar(0.0, deco.DecoCount, key);
                 }
                 else

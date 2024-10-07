@@ -1,10 +1,7 @@
 ﻿using SimModel.Config;
 using SimModel.Domain;
 using SimModel.Model;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SimModel.Service
@@ -225,6 +222,7 @@ namespace SimModel.Service
             DataManagement.DeleteAllClude();
         }
 
+        // TODO: 現状未使用
         /// <summary>
         /// 指定レア度以下を全除外
         /// </summary>
@@ -329,6 +327,11 @@ namespace SimModel.Service
             DataManagement.UpdateMyCondition(condition);
         }
 
+        /// <summary>
+        /// 装飾品の所持数変更を保存
+        /// </summary>
+        /// <param name="deco">対象の装飾品</param>
+        /// <param name="count">変更する値</param>
         public void SaveDecoCount(Deco deco, int count)
         {
             DataManagement.SaveDecoCount(deco, count);

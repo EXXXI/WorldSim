@@ -13,7 +13,11 @@
             IsExpanded="True"
             Margin="0,0,0,0" 
             VerticalAlignment="Top" 
-            Width="auto">
+            Width="auto"
+            Background="Azure"
+            BorderThickness="1"
+            BorderBrush="Black"
+        >
         <ItemsControl ItemsSource="{Binding Path=SelectorVMs.Value, Mode=OneWay}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
