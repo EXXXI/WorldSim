@@ -25,11 +25,12 @@ namespace SimModel.Domain
         private const string LegCsv = "MHW_EQUIP_LEG.csv";
         private const string CharmCsv = "MHW_CHARM.csv";
         private const string DecoCsv = "MHW_DECO.csv";
-        private const string DecoCountJson = "save/decocount.json";
-        private const string CludeCsv = "save/clude.csv";
-        private const string MySetCsv = "save/myset.csv";
-        private const string RecentSkillCsv = "save/recentSkill.csv";
-        private const string ConditionCsv = "save/condition.csv";
+        private const string SaveFolder = "save";
+        private const string DecoCountJson = SaveFolder + "/decocount.json";
+        private const string CludeCsv = SaveFolder + "/clude.csv";
+        private const string MySetCsv = SaveFolder + "/myset.csv";
+        private const string RecentSkillCsv = SaveFolder + "/recentSkill.csv";
+        private const string ConditionCsv = SaveFolder + "/condition.csv";
 
         private const string SkillMasterHeaderName = @"スキル系統";
         private const string SkillMasterHeaderRequiredPoints = @"必要ポイント";
@@ -537,6 +538,17 @@ namespace SimModel.Domain
             catch (Exception e) when (e is DirectoryNotFoundException or FileNotFoundException)
             {
                 return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// saveフォルダがなかったら作成する
+        /// </summary>
+        internal static void MakeSaveFolder()
+        {
+            if (!System.IO.Directory.Exists(SaveFolder))
+            {
+                Directory.CreateDirectory(SaveFolder);
             }
         }
     }
