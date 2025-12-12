@@ -42,6 +42,7 @@ namespace SimModel.Service
             FileOperation.LoadDecoCSV();
 
             // セーブデータ類の読み込み
+            FileOperation.MakeSaveFolder();
             FileOperation.LoadCharmCSV();
             FileOperation.LoadRecentSkillCSV();
             FileOperation.LoadMyConditionCSV();
